@@ -17,8 +17,8 @@ test: # запуск pytest
 
 
 test-coverage: # запись покрытия для CodeClimate
-	poetry run pytest --cov=gendiff --cov-report xml
+	poetry run pytest --cov=page_loader --cov-report xml
 
 
 local-test-coverage: # проверка покрытия тестами
-	poetry run pytest --cov=gendiff
+	poetry run pytest --cov=page_loader

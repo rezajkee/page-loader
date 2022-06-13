@@ -25,3 +25,5 @@ def download(url, path):
     return os.path.abspath(new_file_path)
 
 # download("http://httpbin.org/", os.getcwd())
+# page-loader http://httpbin.org/
+# page-loader --output some/body http://httpbin.org/

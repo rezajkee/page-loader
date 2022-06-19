@@ -42,23 +42,33 @@ def make_dir(name, path):
 
 
 def dwl_pics_mod_html(url_to_page, path_to_html, dir_abs_path):
-    with open(path_to_html, 'r') as fr:
-        soup = BeautifulSoup(fr, 'html.parser')
-        if not soup.find('img'):
+    with open(path_to_html, "r") as fr:
+        soup = BeautifulSoup(fr, "html.parser")
+        if not soup.find("img"):
             pass
         else:
-            for tag in soup.find_all('img'):
+            for tag in soup.find_all("img"):
                 page_url = urlsplit(url_to_page)
-                pic_url = urlsplit(tag['src'])
+                pic_url = urlsplit(tag["src"])
                 if pic_url.netloc:
                     pass
-                pic_url = page_url._replace(path=pic_url.path, query=pic_url.query, fragment=pic_url.fragment)
-                if len(pic_url.path.split('.')) > 1:
-                    new_pic_name = make_name(urlunsplit(pic_url)) + '.' + pic_url.path.split('.')[-1]
+                pic_url = page_url._replace(
+                    path=pic_url.path,
+                    query=pic_url.query,
+                    fragment=pic_url.fragment,
+                )
+                if len(pic_url.path.split(".")) > 1:
+                    new_pic_name = (
+                        make_name(urlunsplit(pic_url))
+                        + "."
+                        + pic_url.path.split(".")[-1]
+                    )
                 pic_abs_path = os.path.join(dir_abs_path, new_pic_name)
                 get_pic(urlunsplit(pic_url), pic_abs_path)
-                tag['src'] = os.path.join(os.path.basename(dir_abs_path), new_pic_name)
-            with open(path_to_html, 'w') as fw:
+                tag["src"] = os.path.join(
+                    os.path.basename(dir_abs_path), new_pic_name
+                )
+            with open(path_to_html, "w") as fw:
                 print(soup.prettify(), file=fw)
 
 

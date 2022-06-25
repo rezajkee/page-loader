@@ -7,3 +7,6 @@ dist/
 coverage.xml
 .pytest_cache/
 .vim
+some
+htmlcov
+links.txt

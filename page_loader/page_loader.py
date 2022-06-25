@@ -1,4 +1,4 @@
-__all__ = ['download']
+__all__ = ["download"]
 import requests
 import os
 import re
@@ -7,20 +7,33 @@ from bs4 import BeautifulSoup
 
 
 def download(url, path):
-    name_from_url = make_name(url)
+    parsed_page_url = urlsplit(url)
+    name_from_url = make_name(parsed_page_url)
     html_file_path = get_html(url, path, name_from_url)
     dir_abs_path = make_dir(name_from_url, path)
-    dwl_pics_mod_html(url, html_file_path, dir_abs_path)
-    print(html_file_path)
+    with open(html_file_path, "r") as fr:
+        soup = BeautifulSoup(fr, "html.parser")
+        if soup.find_all("img", src=True):
+            dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, "img", "src")
+        if soup.find_all("link", href=True):
+            dwl_cont_mod_html(
+                soup, parsed_page_url, dir_abs_path, "link", "href"
+            )
+        if soup.find_all("script", src=True):
+            dwl_cont_mod_html(
+                soup, parsed_page_url, dir_abs_path, "script", "src"
+            )
+        with open(html_file_path, "w") as fw:
+            print(soup.prettify(), file=fw)
+    return html_file_path
 
 
-def make_name(url):
-    parsed_url = urlsplit(url)
+def make_name(parsed_url):
     path = parsed_url.path
-    pattern = r'(.+?)(?:\.\w*)?$'
+    pattern = r"(.+?)(?:\.\w*)?$"
     path_without_exe = re.search(pattern, path)[1]
     raw_name = parsed_url.netloc + path_without_exe
-    new_name = re.sub(r'\W', '-', raw_name)
+    new_name = re.sub(r"\W", "-", raw_name)
     return new_name
 
 
@@ -30,7 +43,7 @@ def get_html(url, path, name):
     with requests.get(url) as response:
         html = response.text
         with open(new_file_path, "w") as f:
-            print(html, file=f)
+            print(html, file=f, end="")
     return os.path.abspath(new_file_path)
 
 
@@ -41,44 +54,40 @@ def make_dir(name, path):
     return os.path.abspath(new_dir_path)
 
 
-def dwl_pics_mod_html(url_to_page, path_to_html, dir_abs_path):
-    with open(path_to_html, "r") as fr:
-        soup = BeautifulSoup(fr, "html.parser")
-        if not soup.find("img"):
+def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr):
+    files_dir_name = os.path.basename(dir_abs_path)
+    for tag in soup.find_all(_tag, attrs={_attr: True}):
+        cont_url = urlsplit(tag[_attr])
+        if cont_url.netloc and cont_url.netloc != parsed_page_url.netloc:
             pass
         else:
-            for tag in soup.find_all("img"):
-                page_url = urlsplit(url_to_page)
-                pic_url = urlsplit(tag["src"])
-                if pic_url.netloc:
-                    pass
-                pic_url = page_url._replace(
-                    path=pic_url.path,
-                    query=pic_url.query,
-                    fragment=pic_url.fragment,
+            cont_url = parsed_page_url._replace(
+                path=cont_url.path,
+                query=cont_url.query,
+                fragment=cont_url.fragment,
+            )
+            new_cont_name = make_name(cont_url)
+            if len(cont_url.path.split(".")) > 1:
+                new_cont_name = (
+                    new_cont_name + "." + cont_url.path.split(".")[-1]
                 )
-                if len(pic_url.path.split(".")) > 1:
-                    new_pic_name = (
-                        make_name(urlunsplit(pic_url))
-                        + "."
-                        + pic_url.path.split(".")[-1]
-                    )
-                pic_abs_path = os.path.join(dir_abs_path, new_pic_name)
-                get_pic(urlunsplit(pic_url), pic_abs_path)
-                tag["src"] = os.path.join(
-                    os.path.basename(dir_abs_path), new_pic_name
+            if len(cont_url.path.split(".")) == 1 and _attr == "href":
+                html_path = get_html(
+                    urlunsplit(cont_url), dir_abs_path, new_cont_name
                 )
-            with open(path_to_html, "w") as fw:
-                print(soup.prettify(), file=fw)
+                tag[_attr] = os.path.join(
+                    files_dir_name, os.path.basename(html_path)
+                )
+                continue
+            cont_abs_path = os.path.join(dir_abs_path, new_cont_name)
+            get_cont(urlunsplit(cont_url), cont_abs_path)
+            tag[_attr] = os.path.join(files_dir_name, new_cont_name)
+    return soup
 
 
-def get_pic(url, path):
-    with requests.get(url, stream=True) as response:
+def get_cont(cont_url, path):
+    with requests.get(cont_url, stream=True) as response:
         chunked_content = response.iter_content(8192)
-        with open(path, 'bw') as f:
+        with open(path, "bw") as f:
             for chunk in chunked_content:
                 f.write(chunk)
-
-# download("http://httpbin.org/", os.getcwd())
-# page-loader http://httpbin.org/
-# page-loader --output body/once https://toolster.net/browser_checker

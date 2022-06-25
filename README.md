@@ -7,3 +7,5 @@ Download html:
 [![asciicast](https://asciinema.org/a/zAj8ejCcBCcWQlv3j9xbcmRie.svg)](https://asciinema.org/a/zAj8ejCcBCcWQlv3j9xbcmRie)
 Download pictures:
 [![asciicast](https://asciinema.org/a/cNPx5hQuXHJAQc8yNs3hgXP50.svg)](https://asciinema.org/a/cNPx5hQuXHJAQc8yNs3hgXP50)
+Download local files:
+[![asciicast](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT.svg)](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT)

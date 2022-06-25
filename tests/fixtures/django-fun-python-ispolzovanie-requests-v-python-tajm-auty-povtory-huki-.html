@@ -1,0 +1,1039 @@
+<html lang="ru">
+ <head>
+  <meta charset="utf-8"/>
+  <title>
+   Использование requests в Python — тайм-ауты, повторы, хуки | Статьи о Python | Все о фреймворке Джанго и его библиотеках
+  </title>
+  <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+  <meta content="The Python HTTP library requests is probably my favourite HTTP utility in all the languages I program in. It's simple, intuitive and ubiquitous in the Python community. Most of the programs that interface with HTTP use either requests or urllib3 from the standard library. Полезные статьи и заметки о Django." name="description">
+   <meta content="68f4641d7f454426" name="yandex-verification"/>
+   <meta content="9CW6iwITflBwNEW40QCIT5dW1dl7O0PCzXeXjYurY14" name="google-site-verification"/>
+   <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+   <link href="/favicon.png" rel="icon" type="image/png"/>
+   <link href="/static/css/rainbow-github.css" rel="stylesheet"/>
+   <link href="/static/css/df.css?1650626356" rel="stylesheet"/>
+   <!-- Yandex.RTB -->
+   <script>
+    window.yaContextCb=window.yaContextCb||[]
+   </script>
+   <script async="" src="https://yandex.ru/ads/system/context.js">
+   </script>
+   <meta content="Статьи о Python | Django.Fun" property="og:site_name"/>
+   <meta content="website" property="og:type"/>
+   <meta content="" property="og:image"/>
+   <meta content="https://django.fun/python/ispolzovanie-requests-v-python-tajm-auty-povtory-huki/" property="og:url"/>
+   <meta content="Использование requests в Python — тайм-ауты, повторы, хуки" property="og:title"/>
+   <meta content="The Python HTTP library requests is probably my favourite HTTP utility in all the languages I program in. It's simple, intuitive and ubiquitous in the Python community. Most of the programs that interface with HTTP use either requests or urllib3 from the standard library." property="og:description"/>
+   <meta content="2022-04-01T00:00:00+02:00" property="article:published_time"/>
+   <meta content="summary" name="twitter:card"/>
+   <meta content="django.fun" name="twitter:domain"/>
+   <meta content="https://django.fun/python/ispolzovanie-requests-v-python-tajm-auty-povtory-huki/" name="twitter:url"/>
+   <meta content="Использование requests в Python — тайм-ауты, повторы, хуки" name="twitter:title"/>
+   <meta content="The Python HTTP library requests is probably my favourite HTTP utility in all the languages I program in. It's simple, intuitive and ubiquitous in the Python community. Most of the programs that interface with HTTP use either requests or urllib3 from the standard library." name="twitter:description"/>
+  </meta>
+ </head>
+ <body>
+  <header class="df-header">
+   <div class="df-header__content">
+    <a class="df-header__brand" href="/">
+     Django.fun
+    </a>
+    <span class="df-header__bar" id="df-nav-bar">
+     ☰
+    </span>
+    <nav class="df-header__nav" id="df-nav">
+     <span class="df-header__nav__close" id="df-nav-close">
+      ✕
+     </span>
+     <span>
+      <a href="/docs/">
+       Документация
+       <svg height="8.623" viewbox="0 0 5.019 8.623" width="5.019" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(-1481.168 -2218.188)">
+         <path d="M230.571,368.7l3.958,3.958-3.958,3.958" fill="none" stroke="#8497bc" transform="translate(1250.95 1849.842)">
+         </path>
+        </g>
+       </svg>
+      </a>
+      <div class="df-header__submenu">
+       <div class="df-header__submenu__content">
+        <div class="df-header__docs">
+         <div class="df-header__docs__django">
+          <h2>
+           <a href="/docs/django/ru/4.0/">
+            Документация Django
+           </a>
+          </h2>
+          <p>
+           Django (Джанго) — свободный фреймворк для веб-приложений на языке Python, использующий шаблон проектирования MVC. Проект поддерживается организацией Django Software Foundation.
+
+Сайт на Django строится из одного или нескольких приложений, которые рекомендуется делать отчуждаемыми и подключаемыми. Это одно из существенных архитектурных отличий этого фреймворка от некоторых других (например, Ruby on Rails). Один из основных принципов фреймворка — DRY (англ. Don't repeat yourself).
+
+Также, в отличие от других фреймворков, обработчики URL в Django конфигурируются явно при помощи регулярных выражений.
+
+Для работы с базой данных Django использует собственный ORM, в котором модель данных описывается классами Python, и по ней генерируется схема базы данных.
+          </p>
+          <div class="df-header__docs__django__versions">
+           Выберите версию
+           <div>
+            <a href="/docs/django/ru/dev/" title="Django dev">
+             dev
+            </a>
+            <a href="/docs/django/ru/4.0/" title="Django 4.0">
+             4.0
+            </a>
+            <a href="/docs/django/ru/3.2/" title="Django 3.2">
+             3.2
+            </a>
+            <a href="/docs/django/ru/3.1/" title="Django 3.1">
+             3.1
+            </a>
+            <a href="/docs/django/ru/2.2/" title="Django 2.2">
+             2.2
+            </a>
+           </div>
+          </div>
+         </div>
+         <div class="df-header__docs__libs">
+          <h2>
+           <a href="/docs/">
+            Документация Django библиотек
+           </a>
+          </h2>
+          <div class="df-header__docs__libs__content">
+           <div>
+            <h3>
+             <a href="/docs/django-orm-cookbook/ru/2.0/">
+              Рецепты Django ORM
+             </a>
+            </h3>
+            <p>
+             Рецепты Django ORM - это книга о работе с моделями Django ORM и Django. Django ORM является одним из ключевых столпов Django. Он предоставляет абстракции …
+            </p>
+           </div>
+           <div>
+            <h3>
+             <a href="/docs/django-rest-framework/ru/3.12/">
+              Django Rest Framework
+             </a>
+            </h3>
+            <p>
+             Django Rest Framework (DRF) — это библиотека, которая работает со стандартными моделями Django для создания гибкого и мощного API для проекта.
+            </p>
+           </div>
+           <div>
+            <h3>
+             <a href="/docs/django-cms/ru/3.9/">
+              Django CMS
+             </a>
+            </h3>
+            <p>
+             Django CMS - это современная платформа для веб-публикаций, построенная на Django, фреймворке веб-приложений «для перфекционистов с соблюдением сроков». Django CMS предлагает готовую поддержку общих функций, …
+            </p>
+           </div>
+           <div>
+            <h3>
+             <a href="/docs/channels/ru/3/">
+              Channels
+             </a>
+            </h3>
+            <p>
+             Channels - это проект, который использует Django и расширяет его возможности за пределы HTTP - для обработки WebSockets, протоколов чата, IoT-протоколов и многого другого. Он …
+            </p>
+           </div>
+           <div>
+            <h3>
+             <a href="/docs/asgiref/ru/3/">
+              ASGI — спецификация и утилиты
+             </a>
+            </h3>
+            <p>
+             ASGI (Asynchronous Server Gateway Interface) является духовным наследником WSGI, предназначенным для обеспечения стандартного интерфейса между асинхронными веб-серверами, платформами и приложениями Python. WSGI предоставил стандарт для …
+            </p>
+           </div>
+           <div>
+            <h3>
+             <a href="/docs/social-docs/ru/0.1/">
+              Python Social Auth
+             </a>
+            </h3>
+            <p>
+             Python Social Auth - это простой в настройке механизм социальной аутентификации/регистрации с поддержкой нескольких платформ и провайдеров аутентификации. Созданный с использованием базового кода из django-social-auth, …
+            </p>
+           </div>
+          </div>
+          <p>
+           <strong>
+            <a href="/docs/">
+             Перейти к полному списке библиотек →
+            </a>
+           </strong>
+          </p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </span>
+     <span>
+      <a href="/articles/">
+       Статьи
+       <svg height="8.623" viewbox="0 0 5.019 8.623" width="5.019" xmlns="http://www.w3.org/2000/svg">
+        <g transform="translate(-1481.168 -2218.188)">
+         <path d="M230.571,368.7l3.958,3.958-3.958,3.958" fill="none" stroke="#8497bc" transform="translate(1250.95 1849.842)">
+         </path>
+        </g>
+       </svg>
+      </a>
+      <div class="df-header__submenu">
+       <div class="df-header__submenu__content">
+        <div class="df-header__docs__libs">
+         <h2>
+          <a href="/articles/">
+           Статьи о Django
+          </a>
+         </h2>
+         <div class="df-header__docs__libs__content">
+          <div>
+           <h3>
+            <a href="/news/">
+             Новости
+            </a>
+           </h3>
+           <p>
+            Новости Django. Будьте всегда в курсе последних изменений и событий.
+           </p>
+          </div>
+          <div>
+           <h3>
+            <a href="/tutorials/">
+             Руководства
+            </a>
+           </h3>
+           <p>
+            Учебники по фреймворку Django, его функциям, вариантам использования и общим полезным вещам фреймворка.
+           </p>
+          </div>
+          <div>
+           <h3>
+            <a href="/tips/">
+             Советы
+            </a>
+           </h3>
+           <p>
+            Различные маленькие подсказки, подсказки, необычное использование Django - небольшие полезные вещи.
+           </p>
+          </div>
+          <div>
+           <h3>
+            <a href="/videos/">
+             Видео
+            </a>
+           </h3>
+           <p>
+            Видеоуроки по фреймворку Django, основам и использованию Python и Django.
+           </p>
+          </div>
+          <div>
+          </div>
+          <div>
+           <h3>
+            <a href="/python/">
+             Python
+            </a>
+           </h3>
+           <p>
+            Учебники по Python, его функциям, вариантам использования и общим полезным вещам.
+           </p>
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </span>
+     <span>
+      <a href="/qa/">
+       Вопросы и ответы
+      </a>
+     </span>
+     <span>
+      <a href="/ru/cbv/">
+       Классы-представления Django
+      </a>
+     </span>
+    </nav>
+   </div>
+  </header>
+  <div class="df-container">
+   <!-- Yandex.RTB R-A-395615-13 -->
+   <div id="yandex_rtb_R-A-395615-13">
+   </div>
+   <script>
+    window.yaContextCb.push(()=>{
+  Ya.Context.AdvManager.render({
+    renderTo: 'yandex_rtb_R-A-395615-13',
+    blockId: 'R-A-395615-13'
+  })
+})
+   </script>
+   <div class="df-articles">
+    <div class="df-articles__content">
+     <h1>
+      Использование requests в Python — тайм-ауты, повторы, хуки
+     </h1>
+     <p>
+      HTTP-библиотека Python
+      <a href="https://requests.readthedocs.io/en/master/">
+       requests
+      </a>
+      - это, вероятно, моя любимая HTTP-утилита во всех языках, на которых я программирую. Она проста, интуитивно понятна и повсеместно распространена в сообществе Python. Большинство программ, взаимодействующих с HTTP, используют либо requests, либо urllib3 из стандартной библиотеки.
+     </p>
+     <p>
+      Хотя благодаря простому API можно сразу же начать продуктивно работать с запросами, библиотека также предлагает расширяемость для продвинутых случаев использования. Если вы пишете API-клиент или веб-скребок, вам наверняка понадобится устойчивость к сетевым сбоям, полезные трассировки отладки и синтаксический сахар
+     </p>
+     <p>
+      Ниже приводится краткое описание возможностей, которые я нашел полезными в запросах при написании инструментов веб-скрейпинга или программ, которые широко используют JSON API.
+     </p>
+     <ul>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#request-hooks">
+        Крючки запросов
+       </a>
+      </li>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#setting-base-urls">
+        Установка базовых URL
+       </a>
+      </li>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#setting-default-timeouts">
+        Установка таймаутов по умолчанию
+       </a>
+      </li>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#retry-on-failure">
+        Возврат при неудаче
+       </a>
+       <ul>
+        <li>
+         <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#combining-timeouts-and-retries">
+          Комбинирование тайм-аутов и повторных попыток
+         </a>
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#debugging-http-requests">
+        Отладка HTTP-запросов
+       </a>
+       <ul>
+        <li>
+         <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#printing-http-headers">
+          Печать HTTP-заголовков
+         </a>
+        </li>
+        <li>
+         <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#printing-everything">
+          Печать всего
+         </a>
+        </li>
+        <li>
+         .
+        </li>
+       </ul>
+      </li>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#testing-and-mocking-requests">
+        Тестирование и издевательство над запросами
+       </a>
+      </li>
+      <li>
+       <a href="https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/#mimicking-browser-behaviors">
+        Имитация поведения браузера
+       </a>
+      </li>
+     </ul>
+     <h2 id="request-hooks">
+      Хуки для запросов
+     </h2>
+     <p>
+      Часто при использовании стороннего API вы хотите убедиться, что возвращаемый ответ действительно действителен. Requests предлагает сокращенный помощник
+      <code>
+       raise_for_status()
+      </code>
+      , который утверждает, что код состояния HTTP ответа не является 4xx или 5xx, т.е. что запрос не привел к ошибке клиента или сервера.
+     </p>
+     <p>
+      Например
+     </p>
+     <pre>
+response = requests.get('https://api.github.com/user/repos?page=1')
+# Assert that there were no errors
+response.raise_for_status()
+</pre>
+     <p>
+      Это может стать повторяющимся, если вам нужно запрашивать
+      <code>
+       raise_for_status()
+      </code>
+      для каждого вызова. К счастью, библиотека requests предлагает интерфейс 'hooks', с помощью которого вы можете подключить обратные вызовы на определенные части процесса запроса.
+     </p>
+     <p>
+      Мы можем использовать хуки, чтобы обеспечить вызов
+      <code>
+       raise_for_status()
+      </code>
+      для каждого объекта ответа.
+     </p>
+     <pre>
+# Create a custom requests object, modifying the global module throws an error
+http = requests.Session()
+
+assert_status_hook = lambda response, *args, **kwargs: response.raise_for_status()
+http.hooks["response"] = [assert_status_hook]
+
+http.get("https://api.github.com/user/repos?page=1")
+
+&gt; HTTPError: 401 Client Error: Unauthorized for url: https://api.github.com/user/repos?page=1
+</pre>
+     <div class="df-ads">
+      <!-- Yandex.RTB R-A-395615-4 -->
+      <div id="yandex_rtb_R-A-395615-4-1">
+      </div>
+      <script>
+       window.yaContextCb.push(()=>{
+      Ya.Context.AdvManager.render({
+        renderTo: 'yandex_rtb_R-A-395615-4-1',
+        blockId: 'R-A-395615-4',
+        pageNumber: 1,
+      })
+    })
+      </script>
+     </div>
+     <h2 id="setting-base-urls">
+      Установка базовых URL
+     </h2>
+     <p>
+      Предположим, что вы используете только один API, размещенный на api.org. В итоге вы будете повторять протокол и домен для каждого вызова http:
+     </p>
+     <pre>
+requests.get('https://api.org/list/')
+requests.get('https://api.org/list/3/item')
+</pre>
+     <p>
+      Вы можете сэкономить на вводе текста, используя
+      <a href="https://toolbelt.readthedocs.io/en/latest/sessions.html#baseurlsession">
+       BaseUrlSession
+      </a>
+      . Это позволит вам указать базовый url для HTTP клиента и указать только путь к ресурсу во время запроса.
+     </p>
+     <pre>
+from requests_toolbelt import sessions
+http = sessions.BaseUrlSession(base_url="https://api.org")
+http.get("/list")
+http.get("/list/item")
+</pre>
+     <p>
+      Обратите внимание, что набор инструментов
+      <a href="https://github.com/requests/toolbelt">
+       requests toolbelt
+      </a>
+      не включен в стандартную установку requests, поэтому вам придется установить его отдельно.
+     </p>
+     <h2 id="setting-default-timeouts">
+      Установка тайм-аутов по умолчанию
+     </h2>
+     <p>
+      Документация по requests
+      <a href="https://requests.readthedocs.io/en/master/user/quickstart/#timeouts">
+       рекомендует
+      </a>
+      устанавливать таймауты для всего производственного кода. Если вы забудете установить тайм-ауты, неправильно работающий сервер может привести к зависанию вашего приложения, особенно учитывая, что большинство кода Python является синхронным.
+     </p>
+     <pre>
+requests.get('https://github.com/', timeout=0.001)
+</pre>
+     <p>
+      Используя
+      <a href="https://requests.readthedocs.io/en/master/user/advanced/#transport-adapters">
+       Транспортные адаптеры
+      </a>
+      , мы можем установить таймаут по умолчанию для всех HTTP-вызовов. Это гарантирует, что будет установлен разумный тайм-аут, даже если разработчик забудет добавить параметр timeout=1 в свой отдельный вызов, но позволяет отменить его на основе каждого вызова.
+     </p>
+     <p>
+      Ниже приведен пример пользовательского транспортного адаптера с таймаутами по умолчанию, вдохновленный
+      <a href="https://github.com/kennethreitz/requests/issues/3070#issuecomment-205070203">
+       этим комментарием на Github
+      </a>
+      . Мы переопределяем конструктор для предоставления таймаута по умолчанию при создании http-клиента и метод send() для обеспечения использования таймаута по умолчанию, если не предоставлен аргумент таймаута.
+     </p>
+     <pre>
+from requests.adapters import HTTPAdapter
+
+DEFAULT_TIMEOUT = 5 # seconds
+
+class TimeoutHTTPAdapter(HTTPAdapter):
+    def __init__(self, *args, **kwargs):
+        self.timeout = DEFAULT_TIMEOUT
+        if "timeout" in kwargs:
+            self.timeout = kwargs["timeout"]
+            del kwargs["timeout"]
+        super().__init__(*args, **kwargs)
+
+    def send(self, request, **kwargs):
+        timeout = kwargs.get("timeout")
+        if timeout is None:
+            kwargs["timeout"] = self.timeout
+        return super().send(request, **kwargs)
+</pre>
+     <p>
+      Мы можем использовать его следующим образом:
+     </p>
+     <pre>
+import requests
+
+http = requests.Session()
+
+# Mount it for both http and https usage
+adapter = TimeoutHTTPAdapter(timeout=2.5)
+http.mount("https://", adapter)
+http.mount("http://", adapter)
+
+# Use the default 2.5s timeout
+response = http.get("https://api.twilio.com/")
+
+# Override the timeout as usual for specific requests
+response = http.get("https://api.twilio.com/", timeout=10)
+</pre>
+     <h2 id="retry-on-failure">
+      Причина отказа
+     </h2>
+     <p>
+      Сетевые соединения несут потери, перегружены, а серверы выходят из строя. Если мы хотим создать действительно надежную программу, мы должны учитывать отказы и иметь стратегию повторных попыток.
+     </p>
+     <p>
+      Добавить стратегию повторной попытки в HTTP-клиент очень просто. Мы создаем HTTPAdapter и передаем нашу стратегию адаптеру.
+     </p>
+     <pre>
+from requests.adapters import HTTPAdapter
+from requests.packages.urllib3.util.retry import Retry
+
+retry_strategy = Retry(
+    total=3,
+    status_forcelist=[429, 500, 502, 503, 504],
+    method_whitelist=["HEAD", "GET", "OPTIONS"]
+)
+adapter = HTTPAdapter(max_retries=retry_strategy)
+http = requests.Session()
+http.mount("https://", adapter)
+http.mount("http://", adapter)
+
+response = http.get("https://en.wikipedia.org/w/api.php")
+</pre>
+     <p>
+      Класс Retry по умолчанию предлагает разумные параметры по умолчанию, но
+      <strong>
+       в значительной степени
+      </strong>
+      настраивается, поэтому здесь приводится сводка наиболее часто используемых мною параметров.
+     </p>
+     <p>
+      Приведенные ниже параметры включают параметры по умолчанию, используемые библиотекой requests.
+     </p>
+     <pre>
+total=10
+</pre>
+     <p>
+      Общее количество повторных попыток. Если количество неудачных запросов или перенаправлений превысит это число, клиент выбросит исключение
+      <code>
+       urllib3.exceptions.MaxRetryError
+      </code>
+      . Я варьирую этот параметр в зависимости от API, с которым работаю, но обычно устанавливаю его меньше 10, обычно достаточно 3 повторных попыток.
+     </p>
+     <pre>
+status_forcelist=[413, 429, 503]
+</pre>
+     <p>
+      Коды ответов HTTP для повторных попыток. Скорее всего, вы захотите повторить попытку при
+      <strong>
+       обычных ошибках сервера (500, 502, 503, 504)
+      </strong>
+      , поскольку серверы и обратные прокси не всегда придерживаются спецификации HTTP. Всегда
+      <strong>
+       повторяйте попытку при превышении лимита скорости 429
+      </strong>
+      , потому что библиотека urllib по умолчанию должна инкрементально отступать при неудачных запросах.
+     </p>
+     <pre>
+method_whitelist=["HEAD", "GET", "PUT", "DELETE", "OPTIONS", "TRACE"]
+</pre>
+     <p>
+      Методы HTTP для повторных попыток. По умолчанию сюда включены все HTTP-методы, кроме POST, поскольку POST может привести к новой вставке.
+      <strong>
+       Измените этот параметр так, чтобы он включал POST
+      </strong>
+      , потому что большинство API, с которыми я имею дело, не возвращают код ошибки и не выполняют вставку в одном и том же вызове. А если они это делают, вам, вероятно, следует опубликовать сообщение об ошибке.
+     </p>
+     <pre>
+backoff_factor=0
+</pre>
+     <p>
+      Это интересный параметр. Он позволяет изменять время сна процессов между неудачными запросами. Алгоритм следующий:
+     </p>
+     <pre>
+{backoff factor} * (2 ** ({number of total retries} - 1))
+</pre>
+     <p>
+      Например, если коэффициент отката установлен на:
+     </p>
+     <ul>
+      <li>
+       1 секунда последующие сны будут
+       <code>
+        0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256
+       </code>
+       .
+      </li>
+      <li>
+       2 секунды -
+       <code>
+        1, 2, 4, 8, 16, 32, 64, 128, 256, 512
+       </code>
+      </li>
+      <li>
+       10 секунд -
+       <code>
+        5, 10, 20, 40, 80, 160, 320, 640, 1280, 2560
+       </code>
+      </li>
+     </ul>
+     <p>
+      Значение экспоненциально возрастает, что является разумной реализацией по умолчанию для
+      <a href="https://stackoverflow.com/a/28732630/2966951">
+       стратегий возврата
+      </a>
+      .
+     </p>
+     <p>
+      По умолчанию это значение равно 0, что означает, что экспоненциальный откат не будет установлен и повторные попытки будут выполняться немедленно.
+      <strong>
+       Обязательно установите значение 1, чтобы избежать забивания ваших серверов!
+      </strong>
+      .
+     </p>
+     <p>
+      Полная документация по модулю retry находится
+      <a href="https://urllib3.readthedocs.io/en/latest/reference/urllib3.util.html#module-urllib3.util.retry">
+       здесь
+      </a>
+      .
+     </p>
+     <h3 id="combining-timeouts-and-retries">
+      Комбинирование тайм-аутов и повторных попыток
+     </h3>
+     <p>
+      Поскольку HTTPAdapter является сравнимым, мы можем объединить повторные попытки и таймауты следующим образом:
+     </p>
+     <pre>
+retries = Retry(total=3, backoff_factor=1, status_forcelist=[429, 500, 502, 503, 504])
+http.mount("https://", TimeoutHTTPAdapter(max_retries=retries))
+</pre>
+     <div class="df-ads">
+      <!-- Yandex.RTB R-A-395615-4 -->
+      <div id="yandex_rtb_R-A-395615-4-2">
+      </div>
+      <script>
+       window.yaContextCb.push(()=>{
+      Ya.Context.AdvManager.render({
+        renderTo: 'yandex_rtb_R-A-395615-4-2',
+        blockId: 'R-A-395615-4',
+        pageNumber: 2,
+      })
+    })
+      </script>
+     </div>
+     <h2 id="debugging-http-requests">
+      Отладка HTTP-запросов
+     </h2>
+     <p>
+      Иногда запросы не работают, и вы не можете понять, почему. Логирование запроса и ответа может дать вам понимание причины неудачи. Есть два способа сделать это - либо используя встроенные настройки отладочного протоколирования, либо используя крючки запросов.
+     </p>
+     <h4 id="printing-http-headers">
+      Печать HTTP-заголовков
+     </h4>
+     <p>
+      При изменении уровня отладки логирования больше 0 будут записываться HTTP-заголовки ответа. Это самый простой вариант, но он не позволяет вам увидеть HTTP-запрос или тело ответа. Это полезно, если вы имеете дело с API, который возвращает большое тело полезной нагрузки, не подходящее для протоколирования, или содержит двоичное содержимое.
+     </p>
+     <p>
+      Любое значение, которое больше 0, включит ведение отладочного журнала.
+     </p>
+     <pre>
+import requests
+import http
+
+http.client.HTTPConnection.debuglevel = 1
+
+requests.get("https://www.google.com/")
+
+# Output
+send: b'GET / HTTP/1.1\r\nHost: www.google.com\r\nUser-Agent: python-requests/2.22.0\r\nAccept-Encoding: gzip, deflate\r\nAccept: */*\r\nConnection: keep-alive\r\n\r\n'
+reply: 'HTTP/1.1 200 OK\r\n'
+header: Date: Fri, 28 Feb 2020 12:13:26 GMT
+header: Expires: -1
+header: Cache-Control: private, max-age=0
+</pre>
+     <h4 id="printing-everything">
+      Печать всего
+     </h4>
+     <p>
+      Если вы хотите регистрировать весь жизненный цикл HTTP, включая текстовое представление запроса и ответа, вы можете использовать крючки запроса и утилиты дампа из requests_toolbelt.
+     </p>
+     <p>
+      Я предпочитаю этот вариант всегда, когда имею дело с API на основе REST, который не возвращает очень большие ответы.
+     </p>
+     <pre>
+import requests
+from requests_toolbelt.utils import dump
+
+def logging_hook(response, *args, **kwargs):
+    data = dump.dump_all(response)
+    print(data.decode('utf-8'))
+
+http = requests.Session()
+http.hooks["response"] = [logging_hook]
+
+http.get("https://api.openaq.org/v1/cities", params={"country": "BA"})
+
+# Output
+&lt; GET /v1/cities?country=BA HTTP/1.1
+&lt; Host: api.openaq.org
+
+&gt; HTTP/1.1 200 OK
+&gt; Content-Type: application/json; charset=utf-8
+&gt; Transfer-Encoding: chunked
+&gt; Connection: keep-alive
+&gt;
+{
+   "meta":{
+      "name":"openaq-api",
+      "license":"CC BY 4.0",
+      "website":"https://docs.openaq.org/",
+      "page":1,
+      "limit":100,
+      "found":1
+   },
+   "results":[
+      {
+         "country":"BA",
+         "name":"Goražde",
+         "city":"Goražde",
+         "count":70797,
+         "locations":1
+      }
+   ]
+}
+</pre>
+     <p>
+      Смотрите
+      <a href="https://toolbelt.readthedocs.io/en/latest/dumputils.html">
+       https://toolbelt.readthedocs.io/en/latest/dumputils.html
+      </a>
+     </p>
+     <h2 id="testing-and-mocking-requests">
+      Тестирование и подражание запросам
+     </h2>
+     <p>
+      Использование сторонних API создает болевую точку в разработке - их трудно тестировать. Инженеры из
+      <a href="https://sentry.io/">
+       Sentry
+      </a>
+      облегчили некоторые из этих проблем, написав библиотеку для имитации запросов во время разработки.
+     </p>
+     <p>
+      Вместо отправки HTTP-ответа на сервер
+      <a href="https://github.com/getsentry/responses">
+       getsentry/responses
+      </a>
+      перехватывает HTTP-запрос и возвращает заранее заданный ответ, который вы добавили во время тестирования.
+     </p>
+     <p>
+      Лучше показать на примере.
+     </p>
+     <pre>
+import unittest
+import requests
+import responses
+
+
+class TestAPI(unittest.TestCase):
+    @responses.activate  # intercept HTTP calls within this method
+    def test_simple(self):
+        response_data = {
+                "id": "ch_1GH8so2eZvKYlo2CSMeAfRqt",
+                "object": "charge",
+                "customer": {"id": "cu_1GGwoc2eZvKYlo2CL2m31GRn", "object": "customer"},
+            }
+        # mock the Stripe API
+        responses.add(
+            responses.GET,
+            "https://api.stripe.com/v1/charges",
+            json=response_data,
+        )
+
+        response = requests.get("https://api.stripe.com/v1/charges")
+        self.assertEqual(response.json(), response_data)
+</pre>
+     <p>
+      Если выполняется HTTP-запрос, который не соответствует имитируемым ответам, возникает ошибка ConnectionError.
+     </p>
+     <pre>
+class TestAPI(unittest.TestCase):
+    @responses.activate
+    def test_simple(self):
+        responses.add(responses.GET, "https://api.stripe.com/v1/charges")
+        response = requests.get("https://invalid-request.com")
+</pre>
+     <p>
+      Выход
+     </p>
+     <pre>
+requests.exceptions.ConnectionError: Connection refused by Responses - the call doesn't match any registered mock.
+
+Request:
+- GET https://invalid-request.com/
+
+Available matches:
+- GET https://api.stripe.com/v1/charges
+</pre>
+     <h2 id="mimicking-browser-behaviors">
+      Имитация поведения браузера
+     </h2>
+     <p>
+      Если вы написали достаточно кода для веб-скрапера, вы заметите, что некоторые сайты возвращают разный HTML в зависимости от того, используете ли вы браузер или обращаетесь к сайту программно. Иногда это является мерой защиты от скраппинга, но обычно серверы используют User-Agent sniffing, чтобы выяснить, какой контент лучше всего подходит для конкретного устройства (например, настольного или мобильного)
+     </p>
+     <p>
+      Если вы хотите вернуть то же содержимое, которое отображает браузер, вы можете переопределить наборы заголовков User-Agent запросов с тем, что послал бы Firefox или Chrome.
+     </p>
+     <pre>
+import requests
+http = requests.Session()
+http.headers.update({
+    "User-Agent": "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:68.0) Gecko/20100101 Firefox/68.0"
+})
+</pre>
+     <p>
+      <em>
+       https://findwork.dev/blog/advanced-usage-python-requests-timeouts-retries-hooks/
+      </em>
+     </p>
+     <p>
+      Поделитесь с другими:
+      <a href="http://vk.com/share.php?url=https://django.fun/python/ispolzovanie-requests-v-python-tajm-auty-povtory-huki/" rel="nofollow" target="_blank" title="Share on VK">
+       <i class="fa fa-vk fa-2x">
+       </i>
+      </a>
+      <a href="https://twitter.com/intent/tweet?text=Использование requests в Python — тайм-ауты, повторы, хуки&amp;url=https://django.fun/python/ispolzovanie-requests-v-python-tajm-auty-povtory-huki/" rel="nofollow" target="_blank" title="Share on Twitter">
+       <i class="fa fa-twitter fa-2x">
+       </i>
+      </a>
+      <a href="https://plus.google.com/share?url=https://django.fun/python/ispolzovanie-requests-v-python-tajm-auty-povtory-huki/" rel="nofollow" target="_blank" title="Share on Google+">
+       <i class="fa fa-google-plus fa-2x">
+       </i>
+      </a>
+     </p>
+    </div>
+    <div class="df-articles__sidebar">
+     <div class="df-articles__sidebar__block">
+      <h4>
+       Рекомендуемые записи по теме
+      </h4>
+      <p>
+       <a href="/python/obyasnenie-magicheskih-metodov-python/">
+        Объяснение магических методов Python
+       </a>
+      </p>
+      <p>
+       <a href="/python/osnovy-python-dlya-nauki-o-dannyh/">
+        Основы Python для науки о данных
+       </a>
+      </p>
+      <p>
+       <a href="/python/stop-using-range-your-python-loops/">
+        Хватит использовать range() в Python для циклов
+       </a>
+      </p>
+      <p>
+       <a href="/python/vy-pishete-operatory-print-dlya-otladki-koda-python/">
+        Вы пишете операторы print() для отладки кода Python?
+       </a>
+      </p>
+      <p>
+       <a href="/python/rukovodstvo-po-python-modulyu-logging/">
+        Руководство по Python модулю logging
+       </a>
+      </p>
+      <p>
+       <a href="/python/rukovodstvo-po-argparse/">
+        Руководство по argparse
+       </a>
+      </p>
+      <p>
+       <a href="/python/naming-underscores-python/">
+        Именование с подчеркиванием в Python
+       </a>
+      </p>
+     </div>
+     <!-- Yandex.RTB R-A-395615-3 -->
+     <div id="yandex_rtb_R-A-395615-3">
+     </div>
+     <script type="text/javascript">
+      (function(w, d, n, s, t) {
+        w[n] = w[n] || [];
+        w[n].push(function() {
+            Ya.Context.AdvManager.render({
+                blockId: "R-A-395615-3",
+                renderTo: "yandex_rtb_R-A-395615-3",
+                async: true
+            });
+        });
+        t = d.getElementsByTagName("script")[0];
+        s = d.createElement("script");
+        s.type = "text/javascript";
+        s.src = "//an.yandex.ru/system/context.js";
+        s.async = true;
+        t.parentNode.insertBefore(s, t);
+    })(this, this.document, "yandexContextAsyncCallbacks");
+     </script>
+     <div class="df-articles__sidebar__block">
+      <h4>
+       Последние вопросы и ответы
+      </h4>
+      <p>
+       <a href="/qa/418136/">
+        Manytomay field is None или невозможно вызвать поле в представлении в django
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418137/">
+        Django не может заставить страницу с формой загрузиться в браузере 404
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418138/">
+        Django: Переопределение шаблона 404 в некоторых представлениях
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418131/">
+        Отправка электронной почты через Gmail не работает в Django. Отключены менее безопасные приложения Gmail
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418132/">
+        Запретить пользователю создавать экземпляр для других пользователей
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418133/">
+        Django Как выбрать один входной ключ среди нескольких входных ключей
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418134/">
+        Необходимо предоставить api_key с приложением django, развернутым на heroku
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418129/">
+        Запуск проекта django с документацией, основанного на linux, на windows
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418130/">
+        Объект типа RefreshToken не является JSON сериализуемым
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418126/">
+        Django 4.0 получение объектов поля "многие ко многим" в представлении списка
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418127/">
+        Vue Js и Django получают поля из объектов ForeignKey
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418128/">
+        Django ManyToMany MultipleChoice Field Edit Values Not Getting Checked
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418124/">
+        Django - Возможно ли предварительно получить несколько фильтров одного поля для набора запросов?
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418125/">
+        Установка начального значения для полей django many to many
+       </a>
+      </p>
+      <p>
+       <a href="/qa/418123/">
+        Почему мой ModelFormSet продолжает обновлять одну и ту же запись вместо того, чтобы создавать новую?
+       </a>
+      </p>
+      <h6>
+       <a href="/qa/">
+        Смотреть все вопросы и ответы →
+       </a>
+      </h6>
+     </div>
+     <!-- Yandex.RTB R-A-395615-2 -->
+     <div id="yandex_rtb_R-A-395615-2">
+     </div>
+     <script type="text/javascript">
+      (function(w, d, n, s, t) {
+        w[n] = w[n] || [];
+        w[n].push(function() {
+            Ya.Context.AdvManager.render({
+                blockId: "R-A-395615-2",
+                renderTo: "yandex_rtb_R-A-395615-2",
+                async: true
+            });
+        });
+        t = d.getElementsByTagName("script")[0];
+        s = d.createElement("script");
+        s.type = "text/javascript";
+        s.src = "//an.yandex.ru/system/context.js";
+        s.async = true;
+        t.parentNode.insertBefore(s, t);
+    })(this, this.document, "yandexContextAsyncCallbacks");
+     </script>
+    </div>
+   </div>
+  </div>
+  <footer>
+   <div class="df-footer">
+    <div class="df-container">
+     © Django.Fun 2017-2021 | 
+                    Django.Fun не связан с Django Software Foundation. Django - зарегистрированная торговая марка Django Software Foundation.
+    </div>
+   </div>
+  </footer>
+ </body>
+ <script src="/static/js/df.js?1650626356">
+ </script>
+ <script src="/static/js/rainbow-custom.min.js">
+ </script>
+ <!-- Yandex.Metrika counter -->
+ <script type="text/javascript">
+  (function (d, w, c) { (w[c] = w[c] || []).push(function() { try { w.yaCounter46974723 = new Ya.Metrika({ id:46974723, clickmap:true, trackLinks:true, accurateTrackBounce:true, webvisor:true }); } catch(e) { } }); var n = d.getElementsByTagName("script")[0], s = d.createElement("script"), f = function () { n.parentNode.insertBefore(s, n); }; s.type = "text/javascript"; s.async = true; s.src = "https://mc.yandex.ru/metrika/watch.js"; if (w.opera == "[object Opera]") { d.addEventListener("DOMContentLoaded", f, false); } else { f(); } })(document, window, "yandex_metrika_callbacks");
+ </script>
+ <noscript>
+  <div>
+   <img alt="" src="https://mc.yandex.ru/watch/46974723" style="position:absolute; left:-9999px;"/>
+  </div>
+ </noscript>
+ <!-- /Yandex.Metrika counter -->
+</html>
+

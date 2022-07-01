@@ -9,3 +9,5 @@ Download pictures:
 [![asciicast](https://asciinema.org/a/cNPx5hQuXHJAQc8yNs3hgXP50.svg)](https://asciinema.org/a/cNPx5hQuXHJAQc8yNs3hgXP50)
 Download local files:
 [![asciicast](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT.svg)](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT)
+Bad URL:
+[![asciicast](https://asciinema.org/a/wLBeu6F1SnJ7WQu0UjM3es6nd.svg)](https://asciinema.org/a/wLBeu6F1SnJ7WQu0UjM3es6nd)

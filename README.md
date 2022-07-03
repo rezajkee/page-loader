@@ -11,3 +11,5 @@ Download local files:
 [![asciicast](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT.svg)](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT)
 Bad URL:
 [![asciicast](https://asciinema.org/a/wLBeu6F1SnJ7WQu0UjM3es6nd.svg)](https://asciinema.org/a/wLBeu6F1SnJ7WQu0UjM3es6nd)
+Full package:
+[![asciicast](https://asciinema.org/a/2pj1dRlYpfXI8dGkjDmehpL7I.svg)](https://asciinema.org/a/2pj1dRlYpfXI8dGkjDmehpL7I)

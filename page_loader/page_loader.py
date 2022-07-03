@@ -5,7 +5,7 @@ import re
 from urllib.parse import urlsplit, urlunsplit
 from bs4 import BeautifulSoup
 from page_loader.app_logger import get_logger
-
+from progress.bar import ChargingBar
 
 logger = get_logger(__name__)
 
@@ -25,17 +25,28 @@ def download(url, path):
     try:
         with open(html_file_path, "r") as fr:
             soup = BeautifulSoup(fr, "html.parser")
-            if soup.find_all("img", src=True):
+            valid_img_tag = soup.find_all("img", src=True)
+            valid_link_tag = soup.find_all("link", href=True)
+            valid_script_tag = soup.find_all("script", src=True)
+            value_of_iterations = (
+                len(valid_img_tag)
+                + len(valid_link_tag)
+                + len(valid_script_tag)
+            )
+            bar = ChargingBar(
+                'Downloading: ', max=value_of_iterations, suffix='%(percent)d%%'
+            )
+            if valid_img_tag:
                 dwl_cont_mod_html(
-                    soup, parsed_page_url, dir_abs_path, "img", "src"
+                    soup, parsed_page_url, dir_abs_path, "img", "src", bar
                 )
-            if soup.find_all("link", href=True):
+            if valid_link_tag:
                 dwl_cont_mod_html(
-                    soup, parsed_page_url, dir_abs_path, "link", "href"
+                    soup, parsed_page_url, dir_abs_path, "link", "href", bar
                 )
-            if soup.find_all("script", src=True):
+            if valid_script_tag:
                 dwl_cont_mod_html(
-                    soup, parsed_page_url, dir_abs_path, "script", "src"
+                    soup, parsed_page_url, dir_abs_path, "script", "src", bar
                 )
             with open(html_file_path, "w") as fw:
                 print(soup.prettify(), file=fw)
@@ -45,6 +56,7 @@ def download(url, path):
             f"Can't create '{html_file_path}' – no permission to directory"
         )
         raise KnownException() from e
+    bar.finish()
     return html_file_path
 
 
@@ -95,12 +107,13 @@ def make_dir(name, path):
     return os.path.abspath(new_dir_path)
 
 
-def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr):
+def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr, bar):
     files_dir_name = os.path.basename(dir_abs_path)
     for tag in soup.find_all(_tag, attrs={_attr: True}):
         content_url = urlsplit(tag[_attr])
         if content_url.netloc and content_url.netloc != parsed_page_url.netloc:
-            pass
+            bar.next()
+            continue
         else:
             content_url = parsed_page_url._replace(
                 path=content_url.path,
@@ -119,10 +132,12 @@ def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr):
                 tag[_attr] = os.path.join(
                     files_dir_name, os.path.basename(html_path)
                 )
+                bar.next()
                 continue
             cont_abs_path = os.path.join(dir_abs_path, new_cont_name)
             get_content(urlunsplit(content_url), cont_abs_path)
             tag[_attr] = os.path.join(files_dir_name, new_cont_name)
+            bar.next()
     return soup
 
 

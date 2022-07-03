@@ -4,8 +4,6 @@ import requests_mock
 import os
 from page_loader import download
 
-FIXTURE_NAME = "hexlet_result.html"
-
 
 @pytest.mark.asyncio
 async def test_download(
@@ -13,7 +11,7 @@ async def test_download(
     application_css_read,
     nodejs_png_read,
     runtime_js_read,
-    result_html,
+    hexlet_result_read,
 ):
     with tempfile.TemporaryDirectory() as tmpdirname:
         with requests_mock.Mocker() as m:
@@ -35,7 +33,7 @@ async def test_download(
             )
             path_to_html = download("https://ru.hexlet.io/courses", tmpdirname)
             with open(path_to_html, "r") as f1:
-                assert f1.read() == result_html
+                assert f1.read() == hexlet_result_read
             with open(
                 os.path.join(
                     tmpdirname,
@@ -68,3 +66,19 @@ async def test_download(
                 "rb",
             ) as f5:
                 assert f5.read() == runtime_js_read
+
+
+@pytest.mark.asyncio
+async def test_no_tags(
+    no_tags_html_read,
+    no_tags_result_read,
+):
+    with tempfile.TemporaryDirectory() as tmpdirname:
+        with requests_mock.Mocker() as m:
+            m.get(
+                "https://ru.hexlet.io/courses",
+                text=no_tags_html_read,
+            )
+            path_to_html = download("https://ru.hexlet.io/courses", tmpdirname)
+            with open(path_to_html, "r") as f:
+                assert f.read() == no_tags_result_read

@@ -25,26 +25,26 @@ def download(url, path):
     try:
         with open(html_file_path, "r") as fr:
             soup = BeautifulSoup(fr, "html.parser")
-            valid_img_tag = soup.find_all("img", src=True)
-            valid_link_tag = soup.find_all("link", href=True)
-            valid_script_tag = soup.find_all("script", src=True)
+            img_tags = soup.find_all("img", src=True)
+            link_tags = soup.find_all("link", href=True)
+            script_tags = soup.find_all("script", src=True)
             value_of_iterations = (
-                len(valid_img_tag)
-                + len(valid_link_tag)
-                + len(valid_script_tag)
+                len(img_tags)
+                + len(link_tags)
+                + len(script_tags)
             )
             bar = ChargingBar(
                 'Downloading: ', max=value_of_iterations, suffix='%(percent)d%%'
             )
-            if valid_img_tag:
+            if img_tags:
                 dwl_cont_mod_html(
                     soup, parsed_page_url, dir_abs_path, "img", "src", bar
                 )
-            if valid_link_tag:
+            if link_tags:
                 dwl_cont_mod_html(
                     soup, parsed_page_url, dir_abs_path, "link", "href", bar
                 )
-            if valid_script_tag:
+            if script_tags:
                 dwl_cont_mod_html(
                     soup, parsed_page_url, dir_abs_path, "script", "src", bar
                 )

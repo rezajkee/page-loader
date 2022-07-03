@@ -49,7 +49,7 @@ def download(url, path):
                     soup, parsed_page_url, dir_abs_path, "script", "src", bar
                 )
             with open(html_file_path, "w") as fw:
-                print(soup.prettify(), file=fw)
+                print(soup.prettify(), file=fw, end="")
     except PermissionError as e:
         logger.debug(f'Recieved an error {e} when creating a file')
         logger.error(

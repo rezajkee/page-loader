@@ -3,7 +3,7 @@ import requests
 import os
 import re
 from urllib.parse import urlsplit, urlunsplit
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, ResultSet
 from page_loader.app_logger import get_logger
 from progress.bar import ChargingBar
 
@@ -16,6 +16,11 @@ class KnownException(Exception):
 
 TIMEOUT = 20
 CHUNK_SIZE = 8192
+TAGS = {
+    "img": "src",
+    "link": "href",
+    "script": "src",
+}
 
 
 def download(url, path):
@@ -29,29 +34,16 @@ def download(url, path):
     try:
         with open(html_file_path, "r") as fr:
             soup = BeautifulSoup(fr, "html.parser")
-            img_tags = soup.find_all("img", src=True)
-            link_tags = soup.find_all("link", href=True)
-            script_tags = soup.find_all("script", src=True)
-            value_of_iterations = (
-                len(img_tags)
-                + len(link_tags)
-                + len(script_tags)
-            )
+            finded_elements = ResultSet(soup)
+            for tag_, attr_ in TAGS.items():
+                finded_elements.extend(soup.find_all(tag_, attrs={attr_: True}))
+            value_of_iterations = len(finded_elements)
             bar = ChargingBar(
                 'Downloading: ', max=value_of_iterations, suffix='%(percent)d%%'
             )
-            if img_tags:
-                dwl_cont_mod_html(
-                    soup, parsed_page_url, dir_abs_path, "img", "src", bar
-                )
-            if link_tags:
-                dwl_cont_mod_html(
-                    soup, parsed_page_url, dir_abs_path, "link", "href", bar
-                )
-            if script_tags:
-                dwl_cont_mod_html(
-                    soup, parsed_page_url, dir_abs_path, "script", "src", bar
-                )
+            dwl_cont_mod_html(
+                finded_elements, parsed_page_url, dir_abs_path, bar
+            )
             with open(html_file_path, "w") as fw:
                 print(soup.prettify(), file=fw, end="")
     except PermissionError as e:
@@ -111,10 +103,11 @@ def make_dir(name, path):
     return os.path.abspath(new_dir_path)
 
 
-def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr, bar):
+def dwl_cont_mod_html(finded_elements, parsed_page_url, dir_abs_path, bar):
     files_dir_name = os.path.basename(dir_abs_path)
-    for tag in soup.find_all(_tag, attrs={_attr: True}):
-        content_url = urlsplit(tag[_attr])
+    for elem in finded_elements:
+        attr_ = TAGS[elem.name]
+        content_url = urlsplit(elem[attr_])
         if content_url.netloc and content_url.netloc != parsed_page_url.netloc:
             bar.next()
             continue
@@ -129,20 +122,19 @@ def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr, bar):
                 new_cont_name = (
                     new_cont_name + "." + content_url.path.split(".")[-1]
                 )
-            if len(content_url.path.split(".")) == 1 and _attr == "href":
+            if len(content_url.path.split(".")) == 1 and attr_ == "href":
                 html_path = save_page_to_file(
                     urlunsplit(content_url), dir_abs_path, new_cont_name
                 )
-                tag[_attr] = os.path.join(
+                elem[attr_] = os.path.join(
                     files_dir_name, os.path.basename(html_path)
                 )
                 bar.next()
                 continue
             cont_abs_path = os.path.join(dir_abs_path, new_cont_name)
             get_content(urlunsplit(content_url), cont_abs_path)
-            tag[_attr] = os.path.join(files_dir_name, new_cont_name)
+            elem[attr_] = os.path.join(files_dir_name, new_cont_name)
             bar.next()
-    return soup
 
 
 def get_content(content_url, path):

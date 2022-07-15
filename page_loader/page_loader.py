@@ -14,12 +14,16 @@ class KnownException(Exception):
     pass
 
 
+TIMEOUT = 20
+CHUNK_SIZE = 8192
+
+
 def download(url, path):
     parsed_page_url = urlsplit(url)
     name_from_url = make_name(parsed_page_url)
     logger.info(f"requested url: {url}")
     logger.info(f"output path: {os.path.abspath(path)}")
-    html_file_path = get_html(url, path, name_from_url)
+    html_file_path = save_page_to_file(url, path, name_from_url)
     logger.info(f"write html file: {html_file_path}")
     dir_abs_path = make_dir(name_from_url, path)
     try:
@@ -63,18 +67,18 @@ def download(url, path):
 def make_name(parsed_url):
     path = parsed_url.path
     pattern = r"(.+?)(?:\.\w*)?$"
-    path_without_exe = re.search(pattern, path)[1]
+    path_without_exe = re.search(pattern, path).group(1)
     raw_name = parsed_url.netloc + path_without_exe
     new_name = re.sub(r"\W", "-", raw_name)
     logger.debug(f"Get name '{new_name}' from path: '{path}'")
     return new_name
 
 
-def get_html(url, path, name):
+def save_page_to_file(url, path, name):
     file_name = name + ".html"
     new_file_path = os.path.join(path, file_name)
     try:
-        with requests.get(url, timeout=10) as response:
+        with requests.get(url, timeout=TIMEOUT) as response:
             response.raise_for_status()
             html = response.text
         with open(new_file_path, "w") as f:
@@ -126,7 +130,7 @@ def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr, bar):
                     new_cont_name + "." + content_url.path.split(".")[-1]
                 )
             if len(content_url.path.split(".")) == 1 and _attr == "href":
-                html_path = get_html(
+                html_path = save_page_to_file(
                     urlunsplit(content_url), dir_abs_path, new_cont_name
                 )
                 tag[_attr] = os.path.join(
@@ -143,9 +147,11 @@ def dwl_cont_mod_html(soup, parsed_page_url, dir_abs_path, _tag, _attr, bar):
 
 def get_content(content_url, path):
     try:
-        with requests.get(content_url, stream=True, timeout=10) as response:
+        with requests.get(
+            content_url, stream=True, timeout=TIMEOUT
+        ) as response:
             response.raise_for_status()
-            chunked_content = response.iter_content(8192)
+            chunked_content = response.iter_content(CHUNK_SIZE)
             with open(path, "bw") as f:
                 for chunk in chunked_content:
                     f.write(chunk)

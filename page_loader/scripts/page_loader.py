@@ -8,8 +8,8 @@ from page_loader.cli import parse_args
 def main():
     args = parse_args()
     try:
-        html_path = download(args.url_to_download, args.output)
-        print(f"Page was downloaded as '{html_path}'")
+        saved_page_path = download(args.url_to_download, args.output)
+        print(f"Page was downloaded as '{saved_page_path}'")
     except KnownException:
         sys.exit(1)
 

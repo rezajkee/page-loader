@@ -9,6 +9,7 @@ from page_loader import download
 async def test_download(
     hexlet_html_read,
     application_css_read,
+    noexe_read,
     nodejs_png_read,
     runtime_js_read,
     hexlet_result_read,
@@ -22,6 +23,10 @@ async def test_download(
             m.get(
                 "/assets/application.css",
                 content=application_css_read,
+            )
+            m.get(
+                "/assets/noexe",
+                content=noexe_read,
             )
             m.get(
                 "/assets/professions/nodejs.png",
@@ -45,27 +50,35 @@ async def test_download(
             with open(
                 os.path.join(
                     tmpdirname,
+                    "ru-hexlet-io-courses_files/ru-hexlet-io-assets-noexe",  # noqa: E501
+                ),
+                "rb",
+            ) as f3:
+                assert f3.read() == noexe_read
+            with open(
+                os.path.join(
+                    tmpdirname,
                     "ru-hexlet-io-courses_files/ru-hexlet-io-courses.html",
                 ),
                 "r",
-            ) as f3:
-                assert f3.read() == hexlet_html_read
+            ) as f4:
+                assert f4.read() == hexlet_html_read
             with open(
                 os.path.join(
                     tmpdirname,
                     "ru-hexlet-io-courses_files/ru-hexlet-io-assets-professions-nodejs.png",  # noqa: E501
                 ),
                 "rb",
-            ) as f4:
-                assert f4.read() == nodejs_png_read
+            ) as f5:
+                assert f5.read() == nodejs_png_read
             with open(
                 os.path.join(
                     tmpdirname,
                     "ru-hexlet-io-courses_files/ru-hexlet-io-packs-js-runtime.js",  # noqa: E501
                 ),
                 "rb",
-            ) as f5:
-                assert f5.read() == runtime_js_read
+            ) as f6:
+                assert f6.read() == runtime_js_read
 
 
 @pytest.mark.asyncio

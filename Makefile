@@ -22,3 +22,7 @@ test-coverage: # запись покрытия для CodeClimate
 
 local-test-coverage: # проверка покрытия тестами
 	poetry run pytest --cov=page_loader
+
+
+coverage-report: # запись покрытия в html-формате
+	poetry run pytest --cov=page_loader --cov-report html

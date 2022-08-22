@@ -45,6 +45,14 @@ def application_css_read():
 
 
 @pytest.fixture(scope='session')
+def noexe_read():
+    path = os.path.join(os.path.dirname(__file__),
+                        FIXTURES_FOLDER, 'noexe')
+    with open(path, "rb") as f:
+        return f.read()
+
+
+@pytest.fixture(scope='session')
 def runtime_js_read():
     path = os.path.join(os.path.dirname(__file__),
                         FIXTURES_FOLDER, 'runtime.js')

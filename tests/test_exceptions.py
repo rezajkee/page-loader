@@ -1,10 +1,10 @@
-import pytest
-import tempfile
 import os
+import tempfile
+
+import pytest
 import requests_mock
-from page_loader import download
-from page_loader.page_loader import KnownException
 from page_loader.file_actions import create_directory, save_content
+from page_loader.page_loader import KnownException, download
 
 
 @pytest.mark.asyncio
@@ -64,5 +64,5 @@ async def test_save_cont_no_access():
         with pytest.raises(KnownException):
             save_content(
                 "https://ru.hexlet.io/courses",
-                os.path.join(tmpdirname, "content")
+                os.path.join(tmpdirname, "content"),
             )

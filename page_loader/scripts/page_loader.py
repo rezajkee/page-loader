@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 
 import sys
-from page_loader.page_loader import download, KnownException
+
 from page_loader.cli import parse_args
+from page_loader.page_loader import KnownException, download
 
 
 def main():

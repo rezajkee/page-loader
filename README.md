@@ -23,18 +23,16 @@ optional arguments:
   -out OUTPUT, --output OUTPUT
                         set path to the existing directory (current directory by default)
 ```
-##### Step 1 — Download html:
-[![asciicast](https://asciinema.org/a/zAj8ejCcBCcWQlv3j9xbcmRie.svg)](https://asciinema.org/a/zAj8ejCcBCcWQlv3j9xbcmRie)
-##### Step 2 — Download pictures:
-[![asciicast](https://asciinema.org/a/cNPx5hQuXHJAQc8yNs3hgXP50.svg)](https://asciinema.org/a/cNPx5hQuXHJAQc8yNs3hgXP50)
-##### Step 3 — Download local files:
-[![asciicast](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT.svg)](https://asciinema.org/a/Liw5rw2Iwpo7zMJtd4AmDaLgT)
-##### Step 4 and 5 — Bad URL:
-[![asciicast](https://asciinema.org/a/wLBeu6F1SnJ7WQu0UjM3es6nd.svg)](https://asciinema.org/a/wLBeu6F1SnJ7WQu0UjM3es6nd)
-##### Step 6 — Full package:
+
+##### Пример работы пакета:
 [![asciicast](https://asciinema.org/a/2pj1dRlYpfXI8dGkjDmehpL7I.svg)](https://asciinema.org/a/2pj1dRlYpfXI8dGkjDmehpL7I)
 
 ##### Для установки пакета с GitHub с помощью pip используйте
 ```bash
 $ pip install git+https://github.com/rezajkee/python-project-lvl3.git
+```
+
+##### Для установки зависимостей используйте
+```bash
+$ make install
 ```

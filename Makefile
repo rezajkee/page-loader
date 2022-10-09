@@ -1,5 +1,9 @@
 # Makefile
 
+install: # выполнить установку зависимостей
+	poetry install
+
+
 build: # собрать пакет
 	poetry build
 
@@ -9,7 +13,8 @@ package-install: # установка пакета из ОС (запускать
 
 
 lint: # запуск линтера (flake8)
-	poetry run flake8 page_loader
+	poetry run flake8 page_loader ;\
+	poetry run flake8 tests
 
 
 test: # запуск pytest
@@ -26,3 +31,13 @@ local-test-coverage: # проверка покрытия тестами
 
 coverage-report: # запись покрытия в html-формате
 	poetry run pytest --cov=page_loader --cov-report html
+
+
+isort: # запуск isort
+	poetry run isort page_loader ;\
+	poetry run isort tests
+
+
+black: # запуск black
+	poetry run black page_loader ;\
+	poetry run black tests

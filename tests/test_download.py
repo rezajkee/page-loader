@@ -1,7 +1,8 @@
-import pytest
-import tempfile
-import requests_mock
 import os
+import tempfile
+
+import pytest
+import requests_mock
 from page_loader import download
 
 

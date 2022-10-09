@@ -1,5 +1,5 @@
-from urllib.parse import urlsplit
 import re
+from urllib.parse import urlsplit
 
 
 def create_name(url):

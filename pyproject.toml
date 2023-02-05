@@ -3,9 +3,6 @@ name = "hexlet-code"
 version = "0.1.0"
 description = ""
 authors = ["Anton Shefer <rezajkee@mail.ru>"]
-packages = [
-  { include = "page_loader" },
-]
 
 [tool.poetry.dependencies]
 python = "^3.8"
